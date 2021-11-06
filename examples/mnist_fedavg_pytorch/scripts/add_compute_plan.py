@@ -19,7 +19,7 @@ import uuid
 import substra
 
 
-ROUNDS = 10
+ROUNDS = 5
 
 current_directory = os.path.dirname(__file__)
 assets_directory = os.path.join(current_directory, '../assets')

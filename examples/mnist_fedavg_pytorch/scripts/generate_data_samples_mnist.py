@@ -34,12 +34,17 @@ DATA_SAMPLE_NUM = 50 # Per data owner.
 # Each such Substra sample contains multiple MNIST samples
 DATA_BATCH_NUM = 128
 
+default_stream_handler = logging.StreamHandler()
+substra_logger = logging.getLogger('substra')
+substra_logger.addHandler(default_stream_handler)
+
 @contextmanager
 def progress_bar(length):
     """Provide progress bar for for loops"""
 
     pg = tqdm(total=length)
-    progress_handler = logging.StreamHandler(SimpleNamespace(write=lambda x: pg.write(x, end='')))
+    progress_handler = logging.StreamHandler(
+        SimpleNamespace(write=lambda x: pg.write(x, end='')))
     substra_logger.removeHandler(default_stream_handler)
     substra_logger.addHandler(progress_handler)
     try:
@@ -48,8 +53,6 @@ def progress_bar(length):
         pg.close()
         substra_logger.removeHandler(progress_handler)
         substra_logger.addHandler(default_stream_handler)
-
-
 
 def read_data(train_data_dir, test_data_dir):
     '''parses data in given train and test data directories
@@ -168,10 +171,17 @@ def load_partition_data_mnist(batch_size,
     client_num = client_idx
     class_num = 10
 
-    return client_num, train_data_num, test_data_num, train_data_global, test_data_global, \
-           train_data_local_num_dict, train_data_local_dict, test_data_local_dict, class_num
+    return client_num,\
+           train_data_num,\
+           test_data_num,\
+           train_data_global,\
+           test_data_global, \
+           train_data_local_num_dict,\
+           train_data_local_dict,\
+           test_data_local_dict,\
+           class_num
 
-def split_dict(input_dict: dict, input_type: str, num_owners: int, num_samples: int) -> list:
+def convert_dict(input_dict: dict, input_type: str, num_owners: int, num_samples: int) -> list:
     input_len = len(input_dict)
     input_list = list(input_dict.values())
     owner_sample_len = input_len // num_owners
@@ -192,47 +202,65 @@ def split_dict(input_dict: dict, input_type: str, num_owners: int, num_samples: 
 
     return owner_list
 
-if __name__ == "__main__":
-
-    default_stream_handler = logging.StreamHandler()
-    substra_logger = logging.getLogger('substra')
-    substra_logger.addHandler(default_stream_handler)
-
-    root_path = os.path.dirname(__file__)
-    asset_path = os.path.join(root_path, '../assets')
-
-    client_num, train_data_num, test_data_num, train_data_global, test_data_global, \
-    train_data_local_num_dict, train_data_local_dict, test_data_local_dict, \
-    class_num = load_partition_data_mnist(DATA_BATCH_NUM)
-
-    train_data = split_dict(train_data_local_dict, 'train', DATA_OWNER_NUM, DATA_SAMPLE_NUM)
-    test_data = split_dict(test_data_local_dict, 'test', DATA_OWNER_NUM, DATA_SAMPLE_NUM)
-
-    train_test_configs = []
-    for idx in range(DATA_OWNER_NUM):
-        train_test_configs.append({
-            'data_owner' : idx + 1,
-            'data_type' : 'train',
-            'data': train_data[idx],
-            'data_samples_root': os.path.join(asset_path, 'train_data%s_samples' % str(idx + 1)),
-        })
-        train_test_configs.append({
-            'data_owner': idx + 1,
-            'data_type': 'test',
-            'data': test_data[idx],
-            'data_samples_root': os.path.join(asset_path, 'test_data%s_samples' % str(idx + 1)),
-        })
-
-    # Save data samples for every data owner
-    for conf in train_test_configs:
-        print('Saving %s data for data owner %d...' % (conf['data_type'], conf['data_owner']))
+def save_data(configs):
+    for conf in configs:
+        print('Saving %s data for data owner %d...' %
+              (conf['data_type'], conf['data_owner']))
         with progress_bar(len(conf['data'])) as progress:
             for i, data_sample in enumerate(conf['data']):
-                filename_x = os.path.join(conf['data_samples_root'], f'data_sample_{i}/data_sample_{i}_x.csv')
-                filename_y = os.path.join(conf['data_samples_root'], f'data_sample_{i}/data_sample_{i}_y.csv')
+                filename_x = os.path.join(conf['data_samples_root'],
+                                          f'data_sample_{i}/data_sample_{i}_x.csv')
+                filename_y = os.path.join(conf['data_samples_root'],
+                                          f'data_sample_{i}/data_sample_{i}_y.csv')
                 os.makedirs(os.path.dirname(filename_x))
                 with open(filename_x, 'w') as f:
                     data_sample[0].to_csv(f, header=False, index=False)
                 with open(filename_y, 'w') as f:
                     data_sample[1].to_csv(f, header=False, index=False)
                 progress.update()
+
+if __name__ == "__main__":
+
+    root_path = os.path.dirname(__file__)
+    asset_path = os.path.join(root_path, '../assets')
+
+    client_num,\
+    train_data_num,\
+    test_data_num,\
+    train_data_global,\
+    test_data_global, \
+    train_data_local_num_dict,\
+    train_data_local_dict,\
+    test_data_local_dict, \
+    class_num = load_partition_data_mnist(DATA_BATCH_NUM)
+
+    train_data = convert_dict(train_data_local_dict,
+                              'train',
+                              DATA_OWNER_NUM,
+                              DATA_SAMPLE_NUM)
+
+    test_data = convert_dict(test_data_local_dict,
+                             'test',
+                             DATA_OWNER_NUM,
+                             DATA_SAMPLE_NUM)
+
+    # Save train and test data samples for every data owner
+    train_test_configs = []
+    for idx in range(DATA_OWNER_NUM):
+        train_test_configs.append({
+            'data_owner' : idx + 1,
+            'data_type' : 'train',
+            'data': train_data[idx],
+            'data_samples_root': os.path.join(asset_path,
+                                              'train_data%s_samples' % str(idx + 1)),
+        })
+
+        train_test_configs.append({
+            'data_owner': idx + 1,
+            'data_type': 'test',
+            'data': test_data[idx],
+            'data_samples_root': os.path.join(asset_path,
+                                              'test_data%s_samples' % str(idx + 1)),
+        })
+
+    save_data(train_test_configs)

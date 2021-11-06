@@ -18,6 +18,7 @@ import zipfile
 
 import substra
 
+
 current_directory = os.path.dirname(__file__)
 assets_directory = os.path.join(current_directory, '../assets')
 

@@ -22,12 +22,12 @@ from tqdm import tqdm
 
 import substra
 
+
+DATA_OWNER_NUM = 2
+
 default_stream_handler = logging.StreamHandler()
 substra_logger = logging.getLogger('substra')
 substra_logger.addHandler(default_stream_handler)
-
-
-DATA_OWNER_NUM = 2
 
 @contextmanager
 def progress_bar(length):
