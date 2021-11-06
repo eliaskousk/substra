@@ -46,6 +46,7 @@ def progress_bar(length):
 
 current_directory = os.path.dirname(__file__)
 assets_directory = os.path.join(current_directory, '../assets')
+data_directory = os.path.join(assets_directory, 'data/femnist')
 
 client1 = substra.Client.from_config_file(profile_name="node-1")
 client2 = substra.Client.from_config_file(profile_name="node-2")
@@ -73,23 +74,23 @@ DATASET2 = {
 }
 
 TRAIN_DATA1_SAMPLES_PATHS = [
-    os.path.join(assets_directory, 'train_data1_samples', path)
-    for path in os.listdir(os.path.join(assets_directory, 'train_data1_samples'))
+    os.path.join(data_directory, 'train_data1_samples', path)
+    for path in os.listdir(os.path.join(data_directory, 'train_data1_samples'))
 ]
 
 TRAIN_DATA2_SAMPLES_PATHS = [
-    os.path.join(assets_directory, 'train_data2_samples', path)
-    for path in os.listdir(os.path.join(assets_directory, 'train_data2_samples'))
+    os.path.join(data_directory, 'train_data2_samples', path)
+    for path in os.listdir(os.path.join(data_directory, 'train_data2_samples'))
 ]
 
 TEST_DATA1_SAMPLES_PATHS = [
-    os.path.join(assets_directory, 'test_data1_samples', path)
-    for path in os.listdir(os.path.join(assets_directory, 'test_data1_samples'))
+    os.path.join(data_directory, 'test_data1_samples', path)
+    for path in os.listdir(os.path.join(data_directory, 'test_data1_samples'))
 ]
 
 TEST_DATA2_SAMPLES_PATHS = [
-    os.path.join(assets_directory, 'test_data2_samples', path)
-    for path in os.listdir(os.path.join(assets_directory, 'test_data2_samples'))
+    os.path.join(data_directory, 'test_data2_samples', path)
+    for path in os.listdir(os.path.join(data_directory, 'test_data2_samples'))
 ]
 
 print('Adding datasets...')
