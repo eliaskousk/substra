@@ -39,11 +39,13 @@ class MNISTOpener(tools.Opener):
     @classmethod
     def _get_X(cls, data):
         X = [torch.from_numpy(sample)[None, :].float() for batch in data for sample in batch]
+        X = torch.stack(X)
         return X
 
     @classmethod
     def _get_y(cls, data):
         y = [torch.from_numpy(sample).long() for batch in data for sample in batch]
+        y = torch.stack(y)
         return y
 
     @classmethod
