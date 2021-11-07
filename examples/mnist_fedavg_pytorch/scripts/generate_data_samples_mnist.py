@@ -252,7 +252,7 @@ if __name__ == "__main__":
             'data_type' : 'train',
             'data': train_data[idx],
             'data_samples_root': os.path.join(asset_path,
-                                              'train_data%s_samples' % str(idx + 1)),
+                                              'data/mnist/train_data%s_samples' % str(idx + 1)),
         })
 
         train_test_configs.append({
@@ -260,7 +260,7 @@ if __name__ == "__main__":
             'data_type': 'test',
             'data': test_data[idx],
             'data_samples_root': os.path.join(asset_path,
-                                              'test_data%s_samples' % str(idx + 1)),
+                                              'data/mnist/test_data%s_samples' % str(idx + 1)),
         })
 
     save_data(train_test_configs)
