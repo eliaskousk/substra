@@ -1,4 +1,4 @@
-FROM eliaskousk/substra-tools:0.7.0-pytorch
+FROM eliaskousk/substra-tools:0.7.0-pytorch-slim
 
 # add your metrics script to docker image
 ADD metrics.py .
