@@ -1,3 +1,3 @@
-# MNIST Objective
+# MNIST / FEMNIST Objective
 
-Identify the handwritten digit!
+Identify the handwritten digit / letter!
