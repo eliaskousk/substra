@@ -10,10 +10,10 @@ import substratools as tools
 
 
 # TODO: Use CLI argument for these
-MODEL = "LinearRegression"
+# MODEL = "LinearRegression"
 # MODEL = "CNN_OriginalFedAvg"
-# MODEL = "CNN_DropOut"
-ONLY_DIGITS = True # For MNIST set to true - For FEMNIST set to either but only  true works for now
+MODEL = "CNN_DropOut"
+ONLY_DIGITS = True # For MNIST set to true - For FEMNIST set to either but only  false works for now
 TRAIN_BATCH_SIZE = 16
 TEST_BATCH_SIZE = 16
 EPOCHS = 3

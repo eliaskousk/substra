@@ -91,19 +91,6 @@ def batch_data(dataset, data_dir, train_bs, test_bs, client_idx=None):
     test_x = np.vstack([test_h5[_EXAMPLE][client_id][_IMGAE][()] for client_id in test_ids])
     test_y = np.vstack([test_h5[_EXAMPLE][client_id][_LABEL][()] for client_id in test_ids]).squeeze()
 
-    # dataloader
-    # train_ds = data.TensorDataset(torch.tensor(train_x), torch.tensor(train_y, dtype=torch.long))
-    # train_dl = data.DataLoader(dataset=train_ds,
-    #                            batch_size=train_bs,
-    #                            shuffle=True,
-    #                            drop_last=False)
-    #
-    # test_ds = data.TensorDataset(torch.tensor(test_x), torch.tensor(test_y, dtype=torch.long))
-    # test_dl = data.DataLoader(dataset=test_ds,
-    #                               batch_size=test_bs,
-    #                               shuffle=True,
-    #                               drop_last=False)
-
     # randomly shuffle train and test data
     np.random.seed(100)
     rng_state = np.random.get_state()
@@ -176,21 +163,6 @@ def load_partition_data_federated_emnist(dataset, data_dir, batch_size=DEFAULT_B
             train_data_num += user_train_data_num
             test_data_num += user_test_data_num
             progress.update()
-
-    # global dataset
-    # train_data_global = data.DataLoader(
-    #             data.ConcatDataset(
-    #                 list(dl.dataset for dl in list(train_data_local_dict.values()))
-    #             ),
-    #             batch_size=batch_size, shuffle=True)
-    # train_data_num = len(train_data_global.dataset)
-    #
-    # test_data_global = data.DataLoader(
-    #             data.ConcatDataset(
-    #                 list(dl.dataset for dl in list(test_data_local_dict.values()) if dl is not None)
-    #             ),
-    #             batch_size=batch_size, shuffle=True)
-    # test_data_num = len(test_data_global.dataset)
     
     # class number
     train_file_path = os.path.join(data_dir, DEFAULT_TRAIN_FILE)

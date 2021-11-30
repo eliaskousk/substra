@@ -26,41 +26,41 @@ client = substra.Client.from_config_file(profile_name="node-1")
 
 ALGO_LOCAL = {
     'name': 'MNIST Local Algo Linear Regression - Private [Auth: MyOrg2MSP]',
-    'description': os.path.join(assets_directory, 'algo_lr/description.md'),
+    'description': os.path.join(assets_directory, 'algo/description.md'),
     'permissions': {
         'public': False,
         'authorized_ids': ["MyOrg2MSP"]
     },
 }
 ALGO_LOCAL_DOCKERFILE_FILES = [
-        os.path.join(assets_directory, 'algo_lr/local/algo_local.py'),
-        os.path.join(assets_directory, 'algo_lr/local/Dockerfile'),
+        os.path.join(assets_directory, 'algo/local/algo_local.py'),
+        os.path.join(assets_directory, 'algo/local/Dockerfile'),
 ]
 
 ALGO_GLOBAL = {
     'name': 'MNIST Global Algo Linear Regression - Private [Auth: MyOrg2MSP]',
-    'description': os.path.join(assets_directory, 'algo_lr/description.md'),
+    'description': os.path.join(assets_directory, 'algo/description.md'),
     'permissions': {
         'public': False,
         'authorized_ids': ["MyOrg2MSP"]
     },
 }
 ALGO_GLOBAL_DOCKERFILE_FILES = [
-        os.path.join(assets_directory, 'algo_lr/global/algo_global.py'),
-        os.path.join(assets_directory, 'algo_lr/global/Dockerfile'),
+        os.path.join(assets_directory, 'algo/global/algo_global.py'),
+        os.path.join(assets_directory, 'algo/global/Dockerfile'),
 ]
 
 #################
 # Build archives
 #################
 
-archive_path = os.path.join(current_directory, 'algo_lr_local.zip')
+archive_path = os.path.join(current_directory, 'algo_local.zip')
 with zipfile.ZipFile(archive_path, 'w') as z:
     for filepath in ALGO_LOCAL_DOCKERFILE_FILES:
         z.write(filepath, arcname=os.path.basename(filepath))
 ALGO_LOCAL['file'] = archive_path
 
-archive_path = os.path.join(current_directory, 'algo_lr_global.zip')
+archive_path = os.path.join(current_directory, 'algo_global.zip')
 with zipfile.ZipFile(archive_path, 'w') as z:
     for filepath in ALGO_GLOBAL_DOCKERFILE_FILES:
         z.write(filepath, arcname=os.path.basename(filepath))
